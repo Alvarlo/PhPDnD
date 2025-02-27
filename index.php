@@ -22,6 +22,7 @@ if(isset($_COOKIE['nombre']))
         <p><input type="submit" value="Enviar"></p>
     </form>
 
+    
 
 </body>
 
