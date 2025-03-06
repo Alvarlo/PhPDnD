@@ -13,5 +13,79 @@ pagina3.php.
  -->
 
  <?php
+$enano = $elfo = $mediano = $humano = $draconido = $gnomo = $semielfo = $semiorco = $tiflin = 0;
 
- ?>
+if (isset($_REQUEST['lugar'])) {
+    if ($_REQUEST['lugar'] === 'bosque') {
+        $elfo += 2;
+        $gnomo += 2;
+        $mediano += 1;
+    } elseif ($_REQUEST['lugar'] === 'montaña') {
+        $enano += 2;
+        $semiorco += 2;
+        $draconido += 1;
+    } elseif ($_REQUEST['lugar'] === 'ciudad') {
+        $humano += 2;
+        $semielfo += 2;
+        $tiflin += 1;
+    }
+}
+
+if (isset($_REQUEST['select'])) {
+    if ($_REQUEST['select'] === 'fuerzaYresistencia') {
+        $semiorco += 2;
+        $enano += 1;
+        $draconido += 1;
+    } elseif ($_REQUEST['select'] === 'inteligenciaYastucia') {
+        $gnomo += 2;
+        $tiflin += 1;
+        $elfo += 1;
+    } elseif ($_REQUEST['select'] === 'carismaYsociabilidad') {
+        $semielfo += 2;
+        $humano += 1;
+        $tiflin += 1;
+    }
+}
+
+if (isset($_REQUEST['habilidades'])) {
+    foreach ($_REQUEST['habilidades'] as $habilidad) {
+        if ($habilidad === 'magia') {
+            $tiflin += 1;
+            $elfo += 1;
+            $gnomo += 1;
+        } elseif ($habilidad === 'combate') {
+            $semiorco += 1;
+            $draconido += 1;
+            $enano += 1;
+        } elseif ($habilidad === 'sigilo') {
+            $mediano += 1;
+            $semielfo += 1;
+            $elfo += 1;
+        }
+    }
+}
+
+$razas = [
+    "Enano" => $enano,
+    "Elfo" => $elfo,
+    "Mediano" => $mediano,
+    "Humano" => $humano,
+    "Dracónido" => $draconido,
+    "Gnomo" => $gnomo,
+    "Semielfo" => $semielfo,
+    "Semiorco" => $semiorco,
+    "Tiflin" => $tiflin
+];
+
+echo $_REQUEST['lugar'];
+echo $_REQUEST['select'];
+echo $_REQUEST['habilidades'];
+
+$razaGanadora = array_search(max($razas), $razas);
+if($razaGanadora > 0){
+    $_SESSION['r_ganadora'] = $razaGanadora;
+}else{
+    echo "No se ha guardado nada";
+}
+
+?>
