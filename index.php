@@ -17,7 +17,7 @@ if(isset($_COOKIE['nombre']))
 
 <body>
 
-    <form action="Pagina1.php" method="post">
+    <form action="Pagina1.php" method="post" required>
         <p><input type="text" name="nombre"></p>
         <p><input type="submit" value="Enviar"></p>
     </form>
