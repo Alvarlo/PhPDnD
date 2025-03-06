@@ -79,7 +79,7 @@ $razas = [
 
 echo $_REQUEST['lugar'];
 echo $_REQUEST['select'];
-echo $_REQUEST['habilidades'];
+print_r ($_REQUEST['habilidades']);
 
 $razaGanadora = array_search(max($razas), $razas);
 if($razaGanadora > 0){
@@ -87,5 +87,7 @@ if($razaGanadora > 0){
 }else{
     echo "No se ha guardado nada";
 }
+
+echo $_SESSION['r_ganadora'];
 
 ?>
