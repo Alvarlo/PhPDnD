@@ -154,37 +154,13 @@ if (isset($_REQUEST["magic_lvl"])) {
 
 
 $claseganadora = array_search(max($clases), $clases);
-if ($claseganadora > 0) {
-    $_SESSION['c_ganadora'] = $claseganadora;
+if ($claseganadora) {
+    $_SESSION['clase_ganadora'] = $claseganadora; // Guardar la clase ganadora en la sesión
 } else {
-    echo "No se ha guardado nada";
-}
-
-$modificadores_razas = [
-    "Humano" => ["Fuerza" => 1, "Destreza" => 1, "Constitucion" => 1, "Inteligencia" => 1, "Sabiduria" => 1, "Carisma" => 1],
-    "Elfo" => [ "Destreza" => 2],
-    "Enano" => ["Constitucion" => 2],
-    "Mediano" => ["Destreza" => 2],
-    "Semielfo" => ["Carisma" => 2],
-    "Tiflin" => ["Inteligencia" => 1, "Carisma" => 2],
-    "Gnomo" => ["Inteligencia" => 2],
-    "Draconido" => ["Fuerza" => 2, "Carisma" => 1],
-    "Semiorco" => ["Fuerza" => 2, "Constitucion" => 1],
-];
-
-$stats; //todo seguir por aqui. Hacer el foreach que genere los stats aleatoriamente y 
-// hacer el foreach que añada los modificadores a cada clase 
-
-function generar_stats($stats)
-{
-    $stats["Inteligencia"] = rand(8, 18);
-    $stats["Fuerza"] = rand(8, 18);
-    $stats["Destreza"] = rand(8, 18);
-    $stats["Constitucion"] = rand(8, 18);
-    $stats["Sabiduria"] = rand(8, 18);
-    $stats["IntelCarismaigencia"] = rand(8, 18);
+    echo "No se ha encontrado una clase ganadora.";
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -226,15 +202,75 @@ function generar_stats($stats)
     </div>
 
 
-    <ul>
-        <li>Fuerza</li>
-        <li>Destreza</li>
-        <li>Constitución</li>
-        <li>Inteligencia</li>
-        <li>Sabiduría</li>
-        <li>Carisma</li>
-    </ul>
-    <input type="button" value="Generar Estadísticas">
+    <form method="get">
+        <button type="submit" name="generar_estadisticas" value="1">Generar Estadísticas</button>
+    </form>
+
+    <br>
+
+
 </body>
 
 </html>
+<?php
+
+echo "Bienvenido " . $_COOKIE["nombreC"] . " tu raza es " .
+ $_SESSION['r_ganadora'] . " tu clase es: " . $_SESSION['clase_ganadora'];
+
+
+$modificadores_razas = [
+    "Humano" => ["Fuerza" => 1, "Destreza" => 1, "Constitucion" => 1, "Inteligencia" => 1, "Sabiduria" => 1, "Carisma" => 1],
+    "Elfo" => ["Destreza" => 2],
+    "Enano" => ["Constitucion" => 2],
+    "Mediano" => ["Destreza" => 2],
+    "Semielfo" => ["Carisma" => 2],
+    "Tiflin" => ["Inteligencia" => 1, "Carisma" => 2],
+    "Gnomo" => ["Inteligencia" => 2],
+    "Draconido" => ["Fuerza" => 2, "Carisma" => 1],
+    "Semiorco" => ["Fuerza" => 2, "Constitucion" => 1],
+];
+
+
+
+function generar_stats(){
+    global $modificadores_razas;
+
+    $raza = $_SESSION['r_ganadora'];
+    $atributos = ["Inteligencia", "Fuerza", "Destreza", "Constitucion", "Sabiduria", "Carisma"];
+    $stats = [];
+    foreach ($atributos as $atributo) {
+        $stats[$atributo] = rand(8, 18);
+    }
+
+    if (array_key_exists($raza, $modificadores_razas)) {
+        foreach ($modificadores_razas[$raza] as $atributo => $modificador) {
+            if (isset($stats[$atributo])) {
+                $stats[$atributo] += $modificador;
+            }
+        }
+    } else {
+        echo "La raza '$raza' no tiene modificadores definidos.\n";
+    }
+
+    foreach ($stats as $stat => $value) {
+        echo "<p>$stat: $value</p>";
+    }
+
+    $_SESSION['stats'] = $stats;
+}
+
+echo "<p>Tus estadisticas son</p>";
+
+if (isset($_SESSION['clase_ganadora']) && !empty($_SESSION['clase_ganadora'])) {
+    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+        generar_stats();
+    } // Llamar a la función solo si la clase ganadora está definida
+} else {
+    echo "No se ha encontrado la clase ganadora. Por favor, selecciona todos los parámetros correctamente.";
+}
+
+?>
+
+<form action="Pagina4.php" method="post">
+    <input type="submit" value="Enviar">
+</form>
