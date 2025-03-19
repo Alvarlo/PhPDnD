@@ -1,14 +1,10 @@
 <?php
 session_start();
-
+//recoge el array de stats de la sesion y lo asigna a una variable $stats
 if (isset($_SESSION['stats'])) {
     $stats = $_SESSION['stats'];
-    // Mostrar las estadísticas almacenadas
-    foreach ($stats as $atributo => $valor) {
-        echo "<p>$atributo: $valor</p>";
-    }
 }
-
+//creamos array clave-valor de habilidades y su descripción
 $habilidades = [
     "Acrobacias" => "Acrobacias mide la capacidad de realizar saltos, volteretas y otras maniobras físicas.",
     "Atletismo" => "Atletismo mide la fuerza y la resistencia física para correr, nadar y escalar.",
@@ -33,42 +29,76 @@ $habilidades = [
     "Navegación" => "Navegación mide la capacidad de orientarse y guiarse por mapas.",
     "Cuidado Animal" => "Cuidado Animal mide la habilidad para entrenar y cuidar animales."
 ];
-
+// Validar el número de habilidades seleccionadas
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Validar el número de habilidades seleccionadas
     if (isset($_POST['habilidades']) && count($_POST['habilidades']) >= 4 && count($_POST['habilidades']) <= 8) {
         $_SESSION['habilidades_elegidas'] = [];
         foreach ($_POST['habilidades'] as $habilidad) {
             $_SESSION['habilidades_elegidas'][$habilidad] = rand(2, 5);
         }
+        //redirige al usuario a la pagina resultado.php
         header("Location: resultado.php");
         exit();
         
-    } else {
-        echo "<p>Debes seleccionar entre 4 y 8 habilidades.</p>";
     }
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seleccionar Habilidades</title>
+    <title>Pagina4</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+    body {
+            background-image: url(https://wallpapercave.com/wp/wp12633136.jpg);
+            background-size: cover;
+            background-attachment: fixed;
+        }
+</style>
 </head>
-<body>
-    <h1>Selecciona tus Habilidades</h1>
-    <form method="POST">
-        <?php foreach ($habilidades as $habilidad => $descripcion): ?>
-            <div>
-                <input type="checkbox" name="habilidades[]" value="<?php echo $habilidad; ?>" id="<?php echo $habilidad; ?>">
-                <label for="<?php echo $habilidad; ?>"><?php echo $habilidad; ?>: <?php echo $descripcion; ?></label>
+
+<body class="bg-dark text-white">
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card bg-secondary text-light shadow">
+                    <div class="card-body">
+                        <h3 class="card-title text-center mb-4">Selecciona tus Habilidades</h3>
+                        
+                        <form method="POST">
+                            <div class="mb-3">
+                                <?php foreach ($habilidades as $habilidad => $descripcion): ?>
+                                    <div class="form-check">
+                                        <input type="checkbox" name="habilidades[]" value="<?php echo $habilidad; ?>" id="<?php echo $habilidad; ?>" class="form-check-input">
+                                        <label for="<?php echo $habilidad; ?>" class="form-check-label">
+                                            <strong><?php echo $habilidad; ?>:</strong> <?php echo $descripcion; ?>
+                                        </label>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                            
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary mt-3">Enviar Selección</button>
+                            </div>
+                        </form>
+                        
+                        <?php if ($_SERVER['REQUEST_METHOD'] === 'POST' && (!isset($_POST['habilidades']) || count($_POST['habilidades']) < 4 || count($_POST['habilidades']) > 8)): ?>
+                            <div class="alert alert-warning mt-3 text-center" role="alert">
+                                Debes seleccionar entre 4 y 8 habilidades.
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
             </div>
-        <?php endforeach; ?>
-        
-        <br>
-        <button type="submit">Enviar Selección</button>
-    </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
+
 </html>

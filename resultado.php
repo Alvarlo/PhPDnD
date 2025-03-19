@@ -1,18 +1,18 @@
 <?php
 session_start();
-
-// Verificar si las habilidades están definidas en la sesión
+//se verifica que se hayan guardado habilidades en la variable de sesión
 if (!isset($_SESSION['habilidades_elegidas'])) {
     echo "<p>No se han seleccionado habilidades. Regresa al formulario y elige tus habilidades.</p>";
     exit();
 }
 
-// Datos básicos del personaje (puedes adaptarlos según tus necesidades)
+//asignamos a nuevas variables las variables de sesión guardadas y las cookies
 $nombre = $_COOKIE["nombreC"];
 $raza = $_SESSION['r_ganadora'];
 $clase = $_SESSION['clase_ganadora'];
 $stats = $_SESSION['stats'];
 
+//creamos array clave-valor de las armas por clase
 $armas_clase = [
     "Bardo" => "Arpa encantada",
     "Clerigo" => "Maza sagrada",
@@ -24,6 +24,7 @@ $armas_clase = [
     "Ranger" => "Arco largo"
 ];
 
+// Trasfondos por raza
 $trasfondos_raza = [
     "Enano" => "Los enanos son conocidos por su resistencia y lealtad. Viviendo en montañas subterráneas, su habilidad para forjar armas y armaduras los hace respetados por todos los reinos.",
     "Elfo" => "Los elfos son seres longevos que valoran la belleza y la naturaleza. Su conexión con la magia y sus entornos les otorga una gracia y sabiduría incomparable.",
@@ -48,91 +49,121 @@ $trasfondos_clase = [
     "Ranger" => "El ranger usa su sabiduría sobre los caminos y los animales para superar desafíos en la naturaleza más salvaje."
 ];
 
-$trasfondo_raza = isset($trasfondos_raza[$raza]) ? $trasfondos_raza[$raza] : "Sin trasfondo disponible para esta raza.";
-$trasfondo_clase = isset($trasfondos_clase[$clase]) ? $trasfondos_clase[$clase] : "Sin trasfondo disponible para esta clase.";
-$trasfondo_combinado = "$nombre, un $raza $clase. $trasfondo_raza $trasfondo_clase.";
+//asignamos el trasfondo que le corresponde a la elección del usuario
+$trasfondo_raza = $trasfondos_raza[$raza];
+$trasfondo_clase =$trasfondos_clase[$clase];
+$trasfondo_combinado = "$nombre, $raza $clase. $trasfondo_raza $trasfondo_clase";
 
-// Imagen según la raza (puedes definir más casos para otras razas)
-/*
+// Imagen según la raza
 $imagenes_razas = [
-    
-    "Enano" => $enano,
-    "Elfo" => $elfo,
-    "Mediano" => $mediano,
-    "Humano" => $humano,
-    "Draconido" => $draconido,
-    "Gnomo" => $gnomo,
-    "Semielfo" => $semielfo,
-    "Semiorco" => $semiorco,
-    "Tiflin" => $tiflin
-    
+    "Enano" => "https://i.imgur.com/i0c9ICx.png",
+    "Elfo" => "https://roltice.wordpress.com/wp-content/uploads/2020/11/elfo.png",
+    "Mediano" => "https://png.pngtree.com/png-vector/20240724/ourmid/pngtree-dnd-adventurer-png-image_12861473.png",
+    "Humano" => "https://png.pngtree.com/png-vector/20240724/ourmid/pngtree-dnd-adventurer-png-image_12861468.png",
+    "Draconido" => "https://static.wikia.nocookie.net/azitora/images/7/73/Dragonborn.png/revision/latest?cb=20220912214016",
+    "Gnomo" => "https://e7.pngegg.com/pngimages/545/585/png-clipart-dungeons-dragons-pathfinder-roleplaying-game-halfling-bard-gnome-dungeons-and-dragons-game-fictional-character.png",
+    "Semielfo" => "https://c0.klipartz.com/pngpicture/688/237/gratis-png-pathfinder-juego-de-rol-mazmorras-y-dragones-bard-d20-system-elf-elf-thumbnail.png",
+    "Semiorco" => "https://www.dndbeyond.com/avatars/thumbnails/6/466/420/618/636274570630462055.png",
+    "Tiflin" => "https://static.wikia.nocookie.net/dungeons202620dragons205c2aa20edicic3b3n/images/d/db/Tiflin.png/revision/latest?cb=20200506121739&path-prefix=es"
 ];
-*/
 
-$imagen_raza = isset($imagenes_razas[$raza]) ? $imagenes_razas[$raza] : "imagenes/default.jpg"; //asignar imagen a variable
+//asignar imagen a variable
+$imagen_raza = $imagenes_razas[$raza]; 
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // eliminar cookies activas
+    foreach ($_COOKIE as $key => $value) {
+        setcookie($key, '', time() - 3600, '/');
+    }
+
+    // finalizar sesión
+    session_unset();
+    session_destroy();
+
+    // redirige a index.php
+    header("Location: index.php");
+    exit();
+}
 
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resultado del Personaje</title>
+    <title>Resultados</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        table {
-            width: 50%;
-            margin: 20px auto;
-            border-collapse: collapse;
-        }
-        table, th, td {
-            border: 1px solid black;
-        }
-        th, td {
-            padding: 10px;
-            text-align: center;
-        }
-        img {
-            display: block;
-            margin: 0 auto;
-            max-width: 300px;
+        body {
+            background-image: url(https://wallpapercave.com/wp/wp12633136.jpg);
+            background-size: cover;
+            background-attachment: fixed;
         }
     </style>
 </head>
-<body>
-    <h1>Resultado del Personaje</h1>
 
-    <!-- Mostrar trasfondo combinado -->
-    <p><?php echo $trasfondo_combinado; ?></p>
+<body class="bg-dark text-white">
 
-    <!-- Mostrar habilidades y estadísticas en una tabla -->
-    <table>
-        <thead>
-            <tr>
-                <th>Habilidad</th>
-                <th>Valor</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($_SESSION['habilidades_elegidas'] as $habilidad => $valor): ?>
-                <tr>
-                    <td><?php echo $habilidad; ?></td>
-                    <td><?php echo $valor; ?></td>
-                </tr>
-            <?php endforeach; ?>
-            <tr>
-                <th colspan="2">Estadísticas</th>
-            </tr>
-            <?php foreach ($stats as $atributo => $valor): ?>
-                <tr>
-                    <td><?php echo $atributo; ?></td>
-                    <td><?php echo $valor; ?></td>
-                </tr>
-            <?php endforeach; ?>
-            <tr>
-                <th>Arma</th>
-                <td><?php echo $armas_clase[$clase]; ?></td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card bg-secondary text-light shadow">
+                    <div class="card-body">
+                        <h3 class="card-title text-center mb-4">Resultado del Personaje</h3>
+
+                        <!-- mostrar trasfondo combinado -->
+                        <p class="text-center"><?php echo $trasfondo_combinado; ?></p>
+
+                        <!-- mostrar habilidades y estadísticas en una tabla -->
+                        <div class="table-responsive">
+                            <table class="table table-dark table-bordered text-center">
+                                <thead>
+                                    <tr>
+                                        <th>Habilidad</th>
+                                        <th>Valor</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($_SESSION['habilidades_elegidas'] as $habilidad => $valor): ?>
+                                        <tr>
+                                            <td><?php echo $habilidad; ?></td>
+                                            <td><?php echo $valor; ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                    <tr>
+                                        <th colspan="2">Estadísticas</th>
+                                    </tr>
+                                    <?php foreach ($stats as $atributo => $valor): ?>
+                                        <tr>
+                                            <td><?php echo $atributo; ?></td>
+                                            <td><?php echo $valor; ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                    <tr>
+                                        <th>Arma</th>
+                                        <td><?php echo $armas_clase[$clase]; ?></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- mostrar imagen de la raza -->
+                        <div class="text-center my-4">
+                            <img src="<?php echo $imagen_raza; ?>" alt="Imagen de la raza" class="img-fluid rounded"
+                                style="background-color: <?php echo htmlspecialchars($_SESSION['color_preferido']); ?>;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- botón que resetea la sesión y redirige a index.php -->
+        <div class="text-center mt-5">
+            <form method="post">
+                <button type="submit" class="btn btn-danger btn-lg">Volver al Inicio y Reiniciar</button>
+            </form>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

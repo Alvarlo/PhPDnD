@@ -1,6 +1,6 @@
 <?php
 session_start();
-
+//inicializamos array de clases si no esta seteado previamente
 if (!isset($_SESSION['clases'])) {
     $_SESSION['clases'] = [
         "Bardo" => 0,
@@ -13,7 +13,7 @@ if (!isset($_SESSION['clases'])) {
         "Ranger" => 0
     ];
 }
-
+//asginamos a la variable clases nuestra variable de sesion clases
 $clases = $_SESSION['clases'];
 
 // Función para determinar el signo del zodiaco basado en la fecha
@@ -104,9 +104,7 @@ if (isset($_REQUEST["fecha_nacimiento"])) {
     }
 }
 
-
-
-
+//asignacion de puntos segun su entrenamiento
 if (isset($_REQUEST["entrenamiento"])) {
     if ($_REQUEST["entrenamiento"] >= 1 and $_REQUEST["entrenamiento"] <= 3) {
         $clases["Clerigo"]++;
@@ -127,8 +125,7 @@ if (isset($_REQUEST["entrenamiento"])) {
     }
 }
 
-
-//slide
+//asignacion de puntos segun nivel mágico
 if (isset($_REQUEST["magic_lvl"])) {
     if ($_REQUEST["magic_lvl"] >= 0 and $_REQUEST["magic_lvl"] <=  9) {
         $clases["Guerrero"]++;
@@ -156,15 +153,21 @@ if (isset($_REQUEST["magic_lvl"])) {
     }
 }
 
-
+//seleccionamos clase con más puntuacion y la asignamos a una variable de sesión
 $claseganadora = array_search(max($clases), $clases);
 if ($claseganadora) {
-    $_SESSION['clase_ganadora'] = $claseganadora; // Guardar la clase ganadora en la sesión
+    $_SESSION['clase_ganadora'] = $claseganadora; 
 } else {
     echo "No se ha encontrado una clase ganadora.";
 }
 
+//asginamos a la variable clases nuestra variable de sesion clases
 $_SESSION['clases'] = $clases;
+
+//asignamos el color elegido a una variable de sesion
+if (isset($_POST['color'])) {
+    $_SESSION['color_preferido'] = $_POST['color'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -174,63 +177,81 @@ $_SESSION['clases'] = $clases;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pagina3</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            align-items: center;
-            text-align: center;
+    body {
+            background-image: url(https://wallpapercave.com/wp/wp12633136.jpg);
+            background-size: cover;
+            background-attachment: fixed;
         }
-    </style>
+</style>
 </head>
 
-<body>
+<body class="bg-dark text-white">
 
-    
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card bg-secondary text-light shadow">
+                    <div class="card-body">
+                        <h3 class="card-title text-center mb-4">Características de Dungeons & Dragons</h3>
 
-    <h1></h1>
-    <div class="container">
-        <h1>Características de Dungeons & Dragons</h1>
+                        <h4 class="text-warning">Fuerza</h4>
+                        <p class="card-text">La Fuerza mide la potencia muscular y la capacidad de cargar y levantar objetos. Es fundamental para los personajes que se especializan en el combate cuerpo a cuerpo, como los guerreros y los bárbaros.</p>
 
-        <h2>Fuerza</h2>
-        <p>La Fuerza mide la potencia muscular y la capacidad de cargar y levantar objetos. Es fundamental para los personajes que se especializan en el combate cuerpo a cuerpo, como los guerreros y los bárbaros.</p>
+                        <h4 class="text-warning">Destreza</h4>
+                        <p class="card-text">La Destreza mide la agilidad, los reflejos y el equilibrio. Es crucial para personajes que dependen de la precisión y la rapidez, como los pícaros y los arqueros.</p>
 
-        <h2>Destreza</h2>
-        <p>La Destreza mide la agilidad, los reflejos y el equilibrio. Es crucial para personajes que dependen de la precisión y la rapidez, como los pícaros y los arqueros.</p>
+                        <h4 class="text-warning">Constitución</h4>
+                        <p class="card-text">La Constitución mide la salud, la resistencia y la vitalidad general. Influye directamente en los puntos de golpe (HP) de un personaje, lo que es importante para todos los aventureros, especialmente aquellos en la primera línea de combate.</p>
 
-        <h2>Constitución</h2>
-        <p>La Constitución mide la salud, la resistencia y la vitalidad general. Influye directamente en los puntos de golpe (HP) de un personaje, lo que es importante para todos los aventureros, especialmente aquellos en la primera línea de combate.</p>
+                        <h4 class="text-warning">Inteligencia</h4>
+                        <p class="card-text">La Inteligencia mide la agudeza mental, el aprendizaje y la capacidad de razonamiento. Es una característica clave para los magos y otros lanzadores de conjuros que dependen del conocimiento arcano.</p>
 
-        <h2>Inteligencia</h2>
-        <p>La Inteligencia mide la agudeza mental, el aprendizaje y la capacidad de razonamiento. Es una característica clave para los magos y otros lanzadores de conjuros que dependen del conocimiento arcano.</p>
+                        <h4 class="text-warning">Sabiduría</h4>
+                        <p class="card-text">La Sabiduría mide la percepción, la intuición y el juicio. Es esencial para clérigos y druidas, ya que influye en su capacidad para lanzar conjuros divinos y comprender el mundo natural.</p>
 
-        <h2>Sabiduría</h2>
-        <p>La Sabiduría mide la percepción, la intuición y el juicio. Es esencial para clérigos y druidas, ya que influye en su capacidad para lanzar conjuros divinos y comprender el mundo natural.</p>
+                        <h4 class="text-warning">Carisma</h4>
+                        <p class="card-text">El Carisma mide la fuerza de personalidad, la capacidad de liderazgo y la influencia. Es vital para bardos, paladines y hechiceros, quienes utilizan su presencia y persuasión para inspirar a otros y lanzar conjuros.</p>
 
-        <h2>Carisma</h2>
-        <p>El Carisma mide la fuerza de personalidad, la capacidad de liderazgo y la influencia. Es vital para bardos, paladines y hechiceros, quienes utilizan su presencia y persuasión para inspirar a otros y lanzar conjuros.</p>
+                        <hr>
+
+                        <h3 class="text-center text-primary">Bienvenido, <?php echo $_COOKIE["nombreC"]; ?></h3>
+                        <p>Tu raza es: <strong><?php echo $_SESSION['r_ganadora']; ?></strong></p>
+                        <p>Tu clase es: <strong><?php echo $_SESSION['clase_ganadora']; ?></strong></p>
+
+                        <form method="get" class="text-center my-4">
+                            <button type="submit" value="generar_estadisticas" class="btn btn-primary">Generar Estadísticas</button>
+                        </form>
+
+                        <div>
+                            <h4 class="text-warning">Tus estadísticas</h4>
+                            <?php
+                            if(isset($_SESSION['stats'])){
+                                foreach ($_SESSION['stats'] as $stat => $value) {
+                                echo "<p><strong>$stat:</strong> $value</p>";
+                            }
+                        }
+                            ?>
+                        </div>
+
+                        <form action="Pagina4.php" method="post" class="text-center my-4">
+                            <button type="submit" class="btn btn-success">Enviar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <?php
-    echo "Bienvenido " . $_COOKIE["nombreC"]." tu raza es " .$_SESSION['r_ganadora'] . " tu clase es: " . $_SESSION['clase_ganadora'];
-    echo "<br>"
-    ?>
-        
-
-
-    <form method="get">
-        <button type="submit" value="generar_estadisticas">Generar Estadísticas</button>
-    </form>
-
-    <br>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 
 </html>
+
 <?php
-
-
-
-
+//inicializamos array clave-valor de modificadores por raza
 $modificadores_razas = [
     "Humano" => ["Fuerza" => 1, "Destreza" => 1, "Constitucion" => 1, "Inteligencia" => 1, "Sabiduria" => 1, "Carisma" => 1],
     "Elfo" => ["Destreza" => 2],
@@ -242,9 +263,7 @@ $modificadores_razas = [
     "Draconido" => ["Fuerza" => 2, "Carisma" => 1],
     "Semiorco" => ["Fuerza" => 2, "Constitucion" => 1],
 ];
-
-
-
+//funcion para generar estadisticas: crea atributos, los randomiza y añade el valor del modificador de raza a los generados
 function generar_stats(){
     global $modificadores_razas;
 
@@ -265,21 +284,12 @@ function generar_stats(){
         echo "La raza '$raza' no tiene modificadores definidos.\n";
     }
 
-    foreach ($stats as $stat => $value) {
-        echo "<p>$stat: $value</p>";
-    }
-
+//asigna a una variable de sesion el array de estadísticas generadas
     $_SESSION['stats'] = $stats;
 }
 
-echo "<p>Tus estadisticas son</p>";
-
+//cuando se usa el metodo get, se llama a la funcion generar_stats
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     generar_stats();
 }
-
 ?>
-
-<form action="Pagina4.php" method="post">
-    <input type="submit" value="Enviar">
-</form>
