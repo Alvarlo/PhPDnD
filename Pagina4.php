@@ -37,13 +37,13 @@ $habilidades = [
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validar el número de habilidades seleccionadas
     if (isset($_POST['habilidades']) && count($_POST['habilidades']) >= 4 && count($_POST['habilidades']) <= 8) {
-        $_SESSION['habilidades_elegidas'] = $_POST['habilidades'];
-        echo "<p>Habilidades seleccionadas:</p>";
-        echo "<ul>";
-        foreach ($_SESSION['habilidades_elegidas'] as $habilidad) {
-            echo "<li>$habilidad</li>";
+        $_SESSION['habilidades_elegidas'] = [];
+        foreach ($_POST['habilidades'] as $habilidad) {
+            $_SESSION['habilidades_elegidas'][$habilidad] = rand(2, 5);
         }
-        echo "</ul>";
+        header("Location: resultado.php");
+        exit();
+        
     } else {
         echo "<p>Debes seleccionar entre 4 y 8 habilidades.</p>";
     }

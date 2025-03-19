@@ -1,16 +1,20 @@
 <?php
 session_start();
 
-$clases = [
-    "Bardo" => 0,
-    "Clerigo" => 0,
-    "Druida" => 0,
-    "Guerrero" => 0,
-    "Mago" => 0,
-    "Paladin" => 0,
-    "Picaro" => 0,
-    "Ranger" => 0
-];
+if (!isset($_SESSION['clases'])) {
+    $_SESSION['clases'] = [
+        "Bardo" => 0,
+        "Clerigo" => 0,
+        "Druida" => 0,
+        "Guerrero" => 0,
+        "Mago" => 0,
+        "Paladin" => 0,
+        "Picaro" => 0,
+        "Ranger" => 0
+    ];
+}
+
+$clases = $_SESSION['clases'];
 
 // Función para determinar el signo del zodiaco basado en la fecha
 function obtenerSignoZodiaco($fecha_nacimiento)
@@ -159,6 +163,8 @@ if ($claseganadora) {
 } else {
     echo "No se ha encontrado una clase ganadora.";
 }
+
+$_SESSION['clases'] = $clases;
 ?>
 
 <!DOCTYPE html>
@@ -177,6 +183,8 @@ if ($claseganadora) {
 </head>
 
 <body>
+
+    
 
     <h1></h1>
     <div class="container">
@@ -201,9 +209,15 @@ if ($claseganadora) {
         <p>El Carisma mide la fuerza de personalidad, la capacidad de liderazgo y la influencia. Es vital para bardos, paladines y hechiceros, quienes utilizan su presencia y persuasión para inspirar a otros y lanzar conjuros.</p>
     </div>
 
+    <?php
+    echo "Bienvenido " . $_COOKIE["nombreC"]." tu raza es " .$_SESSION['r_ganadora'] . " tu clase es: " . $_SESSION['clase_ganadora'];
+    echo "<br>"
+    ?>
+        
+
 
     <form method="get">
-        <button type="submit" name="generar_estadisticas" value="1">Generar Estadísticas</button>
+        <button type="submit" value="generar_estadisticas">Generar Estadísticas</button>
     </form>
 
     <br>
@@ -214,8 +228,7 @@ if ($claseganadora) {
 </html>
 <?php
 
-echo "Bienvenido " . $_COOKIE["nombreC"] . " tu raza es " .
- $_SESSION['r_ganadora'] . " tu clase es: " . $_SESSION['clase_ganadora'];
+
 
 
 $modificadores_razas = [
@@ -261,12 +274,8 @@ function generar_stats(){
 
 echo "<p>Tus estadisticas son</p>";
 
-if (isset($_SESSION['clase_ganadora']) && !empty($_SESSION['clase_ganadora'])) {
-    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-        generar_stats();
-    } // Llamar a la función solo si la clase ganadora está definida
-} else {
-    echo "No se ha encontrado la clase ganadora. Por favor, selecciona todos los parámetros correctamente.";
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    generar_stats();
 }
 
 ?>
